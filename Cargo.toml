@@ -1,0 +1,29 @@
+[package]
+name = "calendar"
+author = "Alex Stone"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+maud = "0.26.0"
+wasm-bindgen = "0.2.99"
+
+[dependencies.web-sys]
+version = "0.3.76"
+features = [
+	"Window",
+	"Document",
+	"Element",
+	"HtmlElement",
+	"Node",
+	"EventTarget",
+	"MouseEvent",
+	"EventListener",
+	"console",
+	"DomRect",
+]
+
+

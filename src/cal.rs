@@ -35,13 +35,9 @@ pub struct Header {
     pub description: String,
 }
 /// This struct represents every possible calendar task, event, whatever
-pub enum CalendarObject {
+pub struct CalendarObject {
     /// header, potential duration
-    Task(Header, Option<Minutes>),
-    /// header, scheduled time, duration
-    ScheduledTask(Header, Time, Minutes),
-    /// header, time, duration
-    Event(Header, Time, Minutes),
-    /// header, time, duration
-    Frame(Header, Time, Minutes),
+    pub header: Header,
+    pub time: Time,
+    pub duration: Minutes,
 }

@@ -8,13 +8,13 @@ use crate::uid;
 #[derive(Clone)]
 pub struct UICalO {
     pub data: std::rc::Rc<cal::CalendarObject>, 
-    pub html_uidentifier: String,
+    html_uidentifier: String,
 }
 impl UICalO {
-    pub fn new(data: std::rc::Rc<cal::CalendarObject>, uidgen: &mut uid::UIDGenerator) -> Self {
+    pub fn new(data: std::rc::Rc<cal::CalendarObject>, uid: String) -> Self {
         Self {
             data,
-            html_uidentifier: uidgen.generate().to_string(),
+            html_uidentifier: uid,
         }
     }
     pub fn get_bounds(&self) -> aabb::Bounds {
@@ -27,14 +27,11 @@ impl UICalO {
         }
     }
     pub fn render(&self) -> Markup {
-        if let cal::CalendarObject::Task(hdr, _) = self.data.as_ref() {
-            return html! {
-                div .task #(self.html_uidentifier) {
-                    h1 .task_heading {(hdr.name)}
-                    p .task_description {(hdr.description)}
-                }
+        return html! {
+            div id=(self.html_uidentifier) {
+                b .task_heading {(self.data.header.name)}
+                p .task_description {(self.data.header.description)}
             }
         }
-        html!()
     }
 }

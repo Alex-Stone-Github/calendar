@@ -14,27 +14,19 @@ mod aabb;
 mod state;
 mod ph;
 
-fn render_all(globals: &mut state::Globals) {
+fn render_all(globals: &state::Globals) {
     use ui::UIElement;
-    globals.tasks_html.set_inner_html(
-        globals.tasks.render().into_string().as_str()
-    );
-    globals.calendar_html.set_inner_html(
-        globals.calendar.render().into_string().as_str()
-    );
-    globals.placeholder_html.set_inner_html(
-        globals.placeholder.render().into_string().as_str()
-    );
+    globals.tasks.draw();
+    globals.calendar.draw();
+    globals.placeholder.draw();
 }
 
 #[wasm_bindgen]
 pub fn main() {
     let mut globals = state::setup();
-    globals.placeholder.content = html! {
-        h1 {"what on earth is this"}
-    };
-    globals.placeholder.x = 100;
-    globals.placeholder.y = 100;
     render_all(&mut globals);
+    
+    let db = globals.calendar.get_bounds();
+    wapi::log(format!("{}, {}, {}, {}", db.x, db.y, db.w, db.h).as_str());
     event::register_events(globals); // move -> drop(globals)
 }

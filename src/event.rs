@@ -80,7 +80,9 @@ pub fn mdown_func(event: MouseEvent, shared_globals: SharedGlobals) {
     use ui::Draggable;
     if let Some(element) = globals.tasks.start_drag(point) {
         globals.event_state.should_move_ph = true;
-        globals.placeholder.content = element.render();
+        globals.placeholder.set_content(
+                Some(element.0)
+            );
     }
 }
 
@@ -88,8 +90,13 @@ pub fn mdown_func(event: MouseEvent, shared_globals: SharedGlobals) {
 pub fn mmove_func(event: MouseEvent, shared_globals: SharedGlobals) {
     let mut globals = shared_globals.lock().unwrap();
     if globals.event_state.should_move_ph {
-        globals.placeholder.x = event.x() as usize - globals.event_state.offset.x as usize;
-        globals.placeholder.y = event.y() as usize - globals.event_state.offset.y as usize;
+        let point = aabb::Point {
+            x: event.x() as f64 - globals.event_state.offset.x as f64,
+            y: event.y() as f64 - globals.event_state.offset.y as f64,
+        };
+        globals.placeholder.set_position(point);
+        use ui::Droppable;
+        globals.calendar.preview(point, globals.placeholder.content.unwrap().clone());
     }
     crate::render_all(&mut globals); // rerender everything
 }
@@ -101,6 +108,6 @@ pub fn mup_func(event: MouseEvent, shared_globals: SharedGlobals) {
 
     use ui::{Draggable, DragEndState};
     globals.tasks.end_drag(DragEndState::Cancelled);
-    globals.placeholder.content = html!();
+    globals.placeholder.set_content(None);
     crate::render_all(&mut globals); // rerender everything
 }
